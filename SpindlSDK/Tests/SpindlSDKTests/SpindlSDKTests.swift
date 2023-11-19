@@ -14,5 +14,32 @@ final class SpindlSDKTests: XCTestCase {
         XCTAssert(true)
     }
     
-    
+    func testDecode() throws {
+        let json = """
+        {
+            "id": 23456,
+            "data": {
+                "name": "goofus",
+                "properties": 99
+            },
+            "identity": {
+                "address": "lumpawarooWallet",
+                "customerUserId": "booya@example.com"
+            },
+            "metadata": {
+                "ts": 1700430547,
+                "persistentId": "ego"
+            },
+            "sdkType": "android_sdk_full",
+            "type": "CUSTOM"
+        }
+"""
+        do {
+            let event = try Spindl.decoder.decode(Event<AnyCodable>.self, from: json.d)
+            
+            print(event)
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+    }
 }

@@ -10,6 +10,6 @@ import Foundation
 class SpindlJSONDecoder : JSONDecoder {
     override init() {
         super.init()
-        self.dateDecodingStrategy = .millisecondsSince1970
+        self.dateDecodingStrategy = .secondsSince1970
     }
 }

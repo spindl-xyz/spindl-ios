@@ -10,7 +10,7 @@ import Foundation
 class SpindlJSONEncoder : JSONEncoder {
     override init() {
         super.init()
-        self.dateEncodingStrategy = .millisecondsSince1970
+        self.dateEncodingStrategy = .secondsSince1970
         #if DEBUG
         self.outputFormatting = [.prettyPrinted, .sortedKeys]
         #endif
