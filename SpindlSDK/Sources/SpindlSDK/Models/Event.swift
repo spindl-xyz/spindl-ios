@@ -8,6 +8,8 @@
 import Foundation
 import Blackbird
 
+
+
 internal enum EventType: String, BlackbirdStringEnum {
     case custom = "CUSTOM"
     case `default` = "DEFAULT"
@@ -15,6 +17,33 @@ internal enum EventType: String, BlackbirdStringEnum {
 
 final class EventRecord : BlackbirdModel {
     static var primaryKey: [BlackbirdColumnKeyPath] = [\.$guid]
+    static let dbPath: String = {
+        let bundleID = Bundle.main.bundleIdentifier ?? "Spindl"
+        let dbName = "xyz.spindl.events.sqlite3"
+        do {
+            let applicationSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+            let appSupportSubDirectory = applicationSupport.appendingPathComponent(bundleID,isDirectory: true)
+            try FileManager.default.createDirectory(at: appSupportSubDirectory, withIntermediateDirectories: true, attributes: nil)
+            let dbFileURL = appSupportSubDirectory.appendingPathComponent(dbName, isDirectory: false)
+            print(dbFileURL.path) // /Users/.../Library/Application Support/YourBundleIdentifier
+            return dbFileURL.path
+        } catch {
+            print(error)
+        }
+        
+        do {
+            let temp = FileManager.default.temporaryDirectory
+            let tempSubDirectory = temp.appendingPathComponent(bundleID, isDirectory: true)
+            try FileManager.default.createDirectory(at: tempSubDirectory, withIntermediateDirectories: true, attributes: nil)
+            let dbFileURL = tempSubDirectory.appendingPathComponent(dbName, isDirectory: false)
+            print(dbFileURL.path) // /Users/.../Library/Application Support/YourBundleIdentifier
+            return dbFileURL.path
+        } catch {
+            print(error)
+        }
+        
+        return "./"
+    }()
     
     @BlackbirdColumn var guid: String
     @BlackbirdColumn var type: EventType

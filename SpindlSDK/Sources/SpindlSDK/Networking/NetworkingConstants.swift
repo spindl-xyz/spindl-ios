@@ -27,6 +27,12 @@ enum NetworkingConstants {
     static let Accept = "Accept"
     static let UserID = "User-Identifier"    
 
+    #if DEBUG
+    static let uploadInterval: TimeInterval = 15
+    #else
+    static let uploadInterval: TimeInterval = 60
+    #endif
+    
     static let queue = DispatchQueue(label: "xyz.spindl.queue.api", qos: .userInitiated, attributes: [.concurrent], autoreleaseFrequency: .workItem, target: nil)
 }
 

@@ -8,7 +8,7 @@
 import Foundation
 import Blackbird
 
-final class IdentificationEvent : Codable, DBArchivable {
+struct IdentificationEvent : Codable, DBArchivable {
     
     
     init(record: EventRecord) throws {
