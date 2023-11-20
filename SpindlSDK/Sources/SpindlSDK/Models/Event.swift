@@ -14,9 +14,9 @@ internal enum EventType: String, BlackbirdStringEnum {
 }
 
 final class EventRecord : BlackbirdModel {
-    static var primaryKey: [BlackbirdColumnKeyPath] = [\.$id]
+    static var primaryKey: [BlackbirdColumnKeyPath] = [\.$guid]
     
-    @BlackbirdColumn var id: Int64
+    @BlackbirdColumn var guid: String
     @BlackbirdColumn var type: EventType
     @BlackbirdColumn var dataName: String
     @BlackbirdColumn var dataProperties: String? // JSON
@@ -26,7 +26,7 @@ final class EventRecord : BlackbirdModel {
     @BlackbirdColumn var ts: Date
     
     static func == (lhs: EventRecord, rhs: EventRecord) -> Bool {
-        return lhs.id == rhs.id &&
+        return lhs.guid == rhs.guid &&
         lhs.type == rhs.type &&
         lhs.dataName == rhs.dataName &&
         lhs.dataProperties == rhs.dataProperties &&
@@ -35,8 +35,8 @@ final class EventRecord : BlackbirdModel {
         lhs.metadataPersistentID == rhs.metadataPersistentID
     }
     
-    init(id: Int64 = 0, type: EventType, dataName: String, dataProperties: String? = nil, identityAddress: String? = nil, identityCustomerUserID: String? = nil, metadataPersistentID: String, ts: Date) {
-        self.id = id
+    init(guid: UUID = UUID(), type: EventType, dataName: String, dataProperties: String? = nil, identityAddress: String? = nil, identityCustomerUserID: String? = nil, metadataPersistentID: String, ts: Date) {
+        self.guid = guid.uuidString
         self.type = type
         self.dataName = dataName
         self.dataProperties = dataProperties
@@ -48,16 +48,18 @@ final class EventRecord : BlackbirdModel {
     
 }
 
-struct Event<C: Codable>: Codable, EventRecordConvertible {
-    let id: Int64
+struct Event<C: Codable>: Codable, EventRecordConvertible, CustomDebugStringConvertible {
     let type: EventType
     let data: EventData<C>
     let identity: EventIdentity?
     var sdkType = "ios_sdk_full"
     let metadata: MobileSDKMetadata
     
+    var debugDescription: String {
+        "type: \(type), data: \(data.name), identity: \(String(describing: identity)), metadata: \(metadata.ts)"
+    }
+    
     init(record: EventRecord) throws {
-        self.id = record.id
         self.type = record.type
         let props: C?
         if let propString = record.dataProperties {
@@ -77,8 +79,7 @@ struct Event<C: Codable>: Codable, EventRecordConvertible {
         self.metadata = MobileSDKMetadata(persistentId: record.metadataPersistentID, ts: record.ts)
     }
     
-    init(id: Int64 = 0, type: EventType, data: EventData<C>, identity: EventIdentity? = nil, metadata: MobileSDKMetadata) {
-        self.id = id
+    init(type: EventType, data: EventData<C>, identity: EventIdentity? = nil, metadata: MobileSDKMetadata) {
         self.type = type
         self.data = data
         self.identity = identity
@@ -95,7 +96,6 @@ struct Event<C: Codable>: Codable, EventRecordConvertible {
         }
         
         return EventRecord(
-            id: id,
             type: type,
             dataName: data.name,
             dataProperties: dataPropertiesJson,
@@ -105,10 +105,6 @@ struct Event<C: Codable>: Codable, EventRecordConvertible {
             ts: metadata.ts
         )
     }
-    
-//    func encode(to encoder: Encoder) throws {
-//        <#code#>
-//    }
 }
 
 protocol EventRecordConvertible {
