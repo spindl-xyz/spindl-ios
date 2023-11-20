@@ -91,4 +91,19 @@ final class SpindlSDKTests: XCTestCase {
             XCTFail(err.localizedDescription)
         }
     }
+    
+    func testIdentityValidationError() async {
+        let badWalletEvent = Event<String>(type: .default,
+                             data: EventData(name: "IDENTIFY", properties: nil),
+                             identity: EventIdentity(address: "This is not valid"),
+                             metadata: MobileSDKMetadata(persistentId: "nothing", ts: Date(timeIntervalSince1970: 1.55)))
+        let result = await API.track(events: [badWalletEvent])
+        
+        switch result {
+        case let .success(res):
+            XCTFail("This shouldn't happen: \(res)")
+        case let .failure(err):
+            print("Error, as expected: \(err.localizedDescription)")
+        }
+    }
 }
