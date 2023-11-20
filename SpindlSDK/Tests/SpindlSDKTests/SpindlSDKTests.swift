@@ -82,9 +82,9 @@ final class SpindlSDKTests: XCTestCase {
     
     func testUploadEvent() async {
         let event = randomEvent()
-        let huh = await API.track(events: [event])
+        let result = await API.track(events: [event])
         
-        switch huh {
+        switch result {
         case let .success(response):
             print("Success: \(response)")
         case let .failure(err):

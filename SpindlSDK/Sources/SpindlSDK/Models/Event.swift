@@ -48,7 +48,8 @@ final class EventRecord : BlackbirdModel {
     
 }
 
-struct Event<C: Codable>: Codable, EventRecordConvertible, CustomDebugStringConvertible {
+struct Event<C: Codable>: Codable, DBArchivable, CustomDebugStringConvertible {
+    
     let type: EventType
     let data: EventData<C>
     let identity: EventIdentity?
@@ -106,9 +107,3 @@ struct Event<C: Codable>: Codable, EventRecordConvertible, CustomDebugStringConv
         )
     }
 }
-
-protocol EventRecordConvertible {
-    func record() throws -> EventRecord
-    init(record: EventRecord) throws
-}
-
