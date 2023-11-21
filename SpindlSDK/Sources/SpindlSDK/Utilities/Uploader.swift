@@ -14,6 +14,7 @@ actor Uploader {
     private let db: Blackbird.Database
     private lazy var taskmaster = RepeatingTaskmaster(timeInterval: NetworkingConstants.uploadInterval, callback: upload)
     private var dbChangeListener: AnyCancellable?
+    private var inProgress = false
     
     init(db: Blackbird.Database) {
         self.db = db
@@ -45,6 +46,16 @@ actor Uploader {
     }
     
     private func upload() async {
+        guard !inProgress else {
+            return
+        }
+        
+        inProgress = true
+        
+        defer {
+            inProgress = false
+        }
+        
         do {
             let allEvents = try await EventRecord.read(from: db).map( { try Event<AnyCodable>(record: $0) })
             
