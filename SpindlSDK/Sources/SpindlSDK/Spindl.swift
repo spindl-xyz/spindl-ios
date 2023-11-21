@@ -26,7 +26,6 @@ public actor Spindl {
         uploader = Uploader(db: db)
     }
     
-    // suspend fun identify(apiKey: String, walletAddress: String? = null, customerUserId: String? = null):
     public func identify(apiKey: String, walletAddress: String? = nil, customerUserId: String? = nil) async throws  {
         guard !apiKey.isEmpty else {
             // Something bad...
