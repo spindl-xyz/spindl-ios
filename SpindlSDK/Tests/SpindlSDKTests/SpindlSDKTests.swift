@@ -6,6 +6,10 @@ import Blackbird
 final class SpindlSDKTests: XCTestCase {
     static let properties: [String:AnyCodable] = ["prop":"eller", "prop2":"swanson", "prop3": 47]
     static let event = Event(type: .custom, data: EventData(name: "blumpy", properties: properties), identity: EventIdentity(address: "shmoopie", customerUserId: "ron@example.com"), metadata: MobileSDKMetadata(persistentId: "superego", ts: Date(timeIntervalSinceNow: -1000000.0)))
+    static let identifyEvent = Event(type: .default, data: EventData<String>(name: "IDENTIFY", properties: nil),
+               identity: EventIdentity(address: "bob@example.com"),
+                                     metadata: MobileSDKMetadata(persistentId: "nothing", ts: .now))
+    let spindl = Spindl.shared
     
     override func setUp() async throws {
 //        API.apiKey = "484c7809-5fe6-4928-a28e-2180b08eea0c"
@@ -104,6 +108,16 @@ final class SpindlSDKTests: XCTestCase {
             XCTFail("This shouldn't happen: \(res)")
         case let .failure(err):
             print("Error, as expected: \(err.localizedDescription)")
+        }
+    }
+    
+    func testIdentify() async {
+        do {
+//            try await spindl.identify(apiKey: "9662ea01-769c-4a5b-8126-9e2647493846", walletAddress: "")
+            try await spindl.identify(apiKey: "9662ea01-769c-4a5b-8126-9e2647493846", walletAddress: "bobo")
+            try await spindl.identify(apiKey: "9662ea01-769c-4a5b-8126-9e2647493846", customerUserId: "boba@thebook.example.coffee")
+        } catch {
+            XCTFail(error.localizedDescription)
         }
     }
 }

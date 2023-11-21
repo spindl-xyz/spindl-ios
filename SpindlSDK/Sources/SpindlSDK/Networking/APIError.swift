@@ -15,6 +15,7 @@ enum APIError : Error, LocalizedError {
     case unknownError(Error)
     case serverError(String)
     case missingApiKey
+    case missingIdentification
     
     init(error: Error) {
         switch error {
@@ -39,6 +40,8 @@ enum APIError : Error, LocalizedError {
             return errorMessage
         case .missingApiKey:
             return "Need to call identify with an API key before tracking events"
+        case .missingIdentification:
+            return "Either wallet address or customer user ID (e.g. email) is required"
         }
     }
 }

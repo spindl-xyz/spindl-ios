@@ -5,8 +5,10 @@ import Foundation
 import Blackbird
 
 public actor Spindl {
+    static let shared = Spindl()
     internal static let decoder = SpindlJSONDecoder()
     internal static let encoder = SpindlJSONEncoder()
+    private let whitespaceRegex = try! Regex("\\s+")
     
     private let db: Blackbird.Database = {
 #if DEBUG
@@ -20,7 +22,7 @@ public actor Spindl {
     
     private let uploader: Uploader
     
-    init() {
+    private init() {
         uploader = Uploader(db: db)
     }
     
@@ -31,8 +33,14 @@ public actor Spindl {
             throw APIError.missingApiKey
         }
         
+        guard nil != walletAddress || nil != customerUserId else {
+            throw APIError.missingIdentification
+        }
+        
+        let fixedUpWalletAddress = sanitise(walletAddress: walletAddress)
+        
         API.apiKey = apiKey
-        let record = try makeIdentifyRecord(apiKey: apiKey, walletAddress: walletAddress, customerUserId: customerUserId)
+        let record = try makeIdentifyRecord(apiKey: apiKey, walletAddress: fixedUpWalletAddress, customerUserId: customerUserId)
         try await record.write(to: db)
     }
     
@@ -46,6 +54,14 @@ public actor Spindl {
     }
     
     // MARK: Private
+    
+    private func sanitise(walletAddress: String?) -> String? {
+        if let addy = walletAddress {
+            return addy.replacing(whitespaceRegex, with: "_")
+        }
+        
+        return nil
+    }
     
     private func makeIdentifyRecord(apiKey: String, walletAddress: String?, customerUserId: String?) throws -> EventRecord {
         let identity = EventIdentity(address: walletAddress, customerUserId: customerUserId)
