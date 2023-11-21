@@ -8,17 +8,40 @@
 import Foundation
 import Blackbird
 import AnyCodable
+import Combine
 
 actor Uploader {
     private let db: Blackbird.Database
     private lazy var taskmaster = RepeatingTaskmaster(timeInterval: NetworkingConstants.uploadInterval, callback: upload)
+    private var dbChangeListener: AnyCancellable?
     
     init(db: Blackbird.Database) {
         self.db = db
         
         Task {
+            await setDBChangeListener(listener: db.changePublisher(for: EventRecord.tableName)
+                .sink { change in
+                    Task {
+                        await self.receivedDbChange(change: change)
+                    }
+                })
+            
             await taskmaster.resume()
         }
+    }
+    
+    private func receivedDbChange(change: Blackbird.Change) {
+        Task {
+            if change.hasNewRows {
+                await taskmaster.resume()
+            } else {
+                await taskmaster.suspend()
+            }
+        }
+    }
+    
+    private func setDBChangeListener(listener: AnyCancellable) {
+        dbChangeListener = listener
     }
     
     private func upload() async {

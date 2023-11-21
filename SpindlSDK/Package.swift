@@ -16,8 +16,9 @@ let package = Package(
             targets: ["SpindlSDK"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/marcoarment/Blackbird.git", .upToNextMajor(from: "0.0.1")),
-        .package(url: "https://github.com/Flight-School/AnyCodable.git", .upToNextMajor(from: "0.6.7"))
+//        .package(url: "https://github.com/meir-toptal/Blackbird.git", branch: "more-change-information"),
+        .package(url: "https://github.com/Flight-School/AnyCodable.git",from: Version("0.6.7")),
+        .package(path: "../../Blackbird"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
