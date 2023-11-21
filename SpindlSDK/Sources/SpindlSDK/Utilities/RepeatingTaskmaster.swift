@@ -30,8 +30,9 @@ actor RepeatingTaskmaster {
     
     private var state = State.suspended
     
-    init(timeInterval: TimeInterval) {
+    init(timeInterval: TimeInterval, callback: (() async -> Void)? = nil) {
         self.timeInterval = timeInterval
+        self.eventHandler = callback
     }
     
     deinit {

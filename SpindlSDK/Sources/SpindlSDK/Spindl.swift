@@ -5,7 +5,7 @@ import Foundation
 import Blackbird
 
 public actor Spindl {
-    static let shared = Spindl()
+    static public let shared = Spindl()
     internal static let decoder = SpindlJSONDecoder()
     internal static let encoder = SpindlJSONEncoder()
     private let whitespaceRegex = try! Regex("\\s+")
