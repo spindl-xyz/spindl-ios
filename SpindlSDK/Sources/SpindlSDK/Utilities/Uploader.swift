@@ -32,17 +32,19 @@ actor Uploader {
     }
     
     private func receivedDbChange(change: Blackbird.Change) {
+        guard !inProgress else { return }
+        
         Task {
-            if change.hasNewRows {
-                await taskmaster.resume()
-            } else {
-                await taskmaster.suspend()
-            }
+            await taskmaster.resume()
         }
     }
     
     private func setDBChangeListener(listener: AnyCancellable) {
         dbChangeListener = listener
+    }
+    
+    private func clear<T: BlackbirdModel>(table: T.Type) async throws {
+        try await T.query(in: db, "DELETE FROM $T")
     }
     
     private func upload() async {
@@ -68,7 +70,8 @@ actor Uploader {
             switch result {
             case let .success(res):
                 print("Upload Success: \(res)")
-                try await EventRecord.query(in: db, "DELETE FROM $T")
+                try await clear(table: EventRecord.self)
+                await taskmaster.suspend()
             case let .failure(err):
                 print("Upload Failure: \(err)")
             }

@@ -26,8 +26,12 @@ public actor Spindl {
         uploader = Uploader(db: db)
     }
     
-    public func identify(apiKey: String, walletAddress: String? = nil, customerUserId: String? = nil) async throws  {
-        guard !apiKey.isEmpty else {
+    public static func initialize(apiKey: String) {
+        API.apiKey = apiKey
+    }
+    
+    public func identify(walletAddress: String? = nil, customerUserId: String? = nil) async throws  {
+        guard let apiKey = API.apiKey, !apiKey.isEmpty else {
             // Something bad...
             throw APIError.missingApiKey
         }
@@ -38,8 +42,7 @@ public actor Spindl {
         
         let fixedUpWalletAddress = sanitise(walletAddress: walletAddress)
         
-        API.apiKey = apiKey
-        let record = try makeIdentifyRecord(apiKey: apiKey, walletAddress: fixedUpWalletAddress, customerUserId: customerUserId)
+        let record = try makeIdentifyRecord(walletAddress: fixedUpWalletAddress, customerUserId: customerUserId)
         try await record.write(to: db)
     }
     
@@ -62,7 +65,7 @@ public actor Spindl {
         return nil
     }
     
-    private func makeIdentifyRecord(apiKey: String, walletAddress: String?, customerUserId: String?) throws -> EventRecord {
+    private func makeIdentifyRecord(walletAddress: String?, customerUserId: String?) throws -> EventRecord {
         let identity = EventIdentity(address: walletAddress, customerUserId: customerUserId)
         
         let identifyEvent = Event<String>(type: .default,

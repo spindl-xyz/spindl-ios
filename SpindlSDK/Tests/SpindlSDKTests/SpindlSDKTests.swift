@@ -12,8 +12,8 @@ final class SpindlSDKTests: XCTestCase {
     let spindl = Spindl.shared
     
     override func setUp() async throws {
-//        API.apiKey = "484c7809-5fe6-4928-a28e-2180b08eea0c"
-        API.apiKey = "9662ea01-769c-4a5b-8126-9e2647493846"
+//      "484c7809-5fe6-4928-a28e-2180b08eea0c"
+        Spindl.initialize(apiKey: "9662ea01-769c-4a5b-8126-9e2647493846")
     }
     
     private func randomEvent() -> Event<[String:String]> {
@@ -114,9 +114,10 @@ final class SpindlSDKTests: XCTestCase {
     func testIdentify() async {
         do {
 //            try await spindl.identify(apiKey: "9662ea01-769c-4a5b-8126-9e2647493846", walletAddress: "")
-            try await spindl.identify(apiKey: "9662ea01-769c-4a5b-8126-9e2647493846", walletAddress: "bobo")
-            try await spindl.identify(apiKey: "9662ea01-769c-4a5b-8126-9e2647493846", customerUserId: "boba@thebook.example.coffee")
+            try await spindl.identify(walletAddress: "bobo")
+            try await spindl.identify(customerUserId: "boba@thebook.example.coffee")
         } catch {
+            print("Error: \(error.localizedDescription)")
             XCTFail(error.localizedDescription)
         }
     }

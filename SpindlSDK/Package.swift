@@ -16,7 +16,7 @@ let package = Package(
             targets: ["SpindlSDK"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/meir-toptal/Blackbird.git", branch: "more-change-information"),
+        .package(url: "https://github.com/marcoarment/Blackbird.git", from: Version("0.5.0")),
         .package(url: "https://github.com/Flight-School/AnyCodable.git",from: Version("0.6.7")),
     ],
     targets: [
