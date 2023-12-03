@@ -14,6 +14,7 @@ struct MobileSDKMetadata : Codable {
     
     let persistentId: String
     let ts: Date
+    private(set) var appID: String = Bundle.main.bundleIdentifier!
     
 //    init(from decoder: Decoder) throws {
 //        let container = try decoder.container(keyedBy: CodingKeys.self)
