@@ -9,7 +9,7 @@ import Foundation
 
 struct MobileSDKMetadata : Codable {
     static func == (lhs: MobileSDKMetadata, rhs: MobileSDKMetadata) -> Bool {
-        true
+        lhs.ts == rhs.ts && lhs.persistentId == rhs.persistentId
     }
     
     let persistentId: String
