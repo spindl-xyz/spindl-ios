@@ -72,16 +72,22 @@ final class SpindlSDKTests: XCTestCase {
     }
     
     func testInsertEvent() async {
+        let expectation1 = XCTestExpectation(description: "Wrote event 1")
+        let expectation2 = XCTestExpectation(description: "Wrote event 2")
         
         do {
             let db = try! Blackbird.Database(path: "/tmp/testInsertEvent.db", options: [.debugPrintEveryQuery])
             let newEvent1 = randomEvent()
             let newEvent2 = randomEvent()
             try await newEvent1.record().write(to: db)
+            expectation1.fulfill()
             try await newEvent2.record().write(to: db)
+            expectation2.fulfill()
         } catch {
             XCTFail(error.localizedDescription)
         }
+        
+        await fulfillment(of: [expectation1, expectation2], timeout: 60)
     }
     
     func testUploadEvent() async {
@@ -94,6 +100,18 @@ final class SpindlSDKTests: XCTestCase {
         case let .failure(err):
             XCTFail(err.localizedDescription)
         }
+    }
+    
+    func testButtonEvent() async {
+        let expectation1 = XCTestExpectation(description: "Tracked event")
+        
+        do {
+            try await Spindl.shared.track(name: "myButtonTapped", properties: ["view":"MyLoginView","otherProperty":"Another one"])
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+        
+        await fulfillment(of: [expectation1], timeout: 60)
     }
     
     func testIdentityValidationError() async {
