@@ -23,24 +23,6 @@ extension StringProtocol {
         return String(Array(0..<n).map { _ in characters.randomElement()! })
     }
     
-//    static func random(among: [String]) -> String {
-//        assert(!among.isEmpty,"Empty Strings not supported")
-//        var g = SystemRandomNumberGenerator()
-//        let c = among.shuffled(using: &g)
-//        let y = String(c.first!)
-//        return y
-//    }
-//    
-//    static func random(within: String) -> String {
-//        assert(!within.isEmpty,"Empty Strings not supported")
-//        let c = Array(within)
-//        var g = SystemRandomNumberGenerator()
-//        let d = c.shuffled(using: &g)
-//        let e = d.first
-//        let y = String(e!)
-//        return y
-//    }
-    
     public var d: Data {
         return data(using: .utf8) ?? Data()
     }

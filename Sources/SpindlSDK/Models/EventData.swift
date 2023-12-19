@@ -13,7 +13,7 @@ struct EventData<C: Codable> : Codable {
     let properties: C?
     
     static func == (lhs: EventData, rhs: EventData) -> Bool {
-        true
+        lhs.name == rhs.name // TODO? Compare properties
     }
     
     

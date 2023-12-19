@@ -12,8 +12,7 @@ final class SpindlSDKTests: XCTestCase {
     let spindl = Spindl.shared
     
     override func setUp() async throws {
-//      "484c7809-5fe6-4928-a28e-2180b08eea0c"
-        Spindl.initialize(apiKey: "9662ea01-769c-4a5b-8126-9e2647493846")
+        Spindl.initialize(apiKey: "<your API key here>")
     }
     
     private func randomEvent() -> Event<[String:String]> {
