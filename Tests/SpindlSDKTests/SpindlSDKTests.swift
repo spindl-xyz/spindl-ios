@@ -130,7 +130,6 @@ final class SpindlSDKTests: XCTestCase {
     
     func testIdentify() async {
         do {
-//            try await spindl.identify(apiKey: "9662ea01-769c-4a5b-8126-9e2647493846", walletAddress: "")
             try await spindl.identify(walletAddress: "bobo")
             try await spindl.identify(customerUserId: "boba@thebook.example.coffee")
         } catch {
