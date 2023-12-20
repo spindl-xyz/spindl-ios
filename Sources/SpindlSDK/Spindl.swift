@@ -32,7 +32,6 @@ public actor Spindl {
     
     public func identify(walletAddress: String? = nil, customerUserId: String? = nil) async throws  {
         guard let apiKey = API.apiKey, !apiKey.isEmpty else {
-            // Something bad...
             throw APIError.missingApiKey
         }
         
@@ -40,9 +39,7 @@ public actor Spindl {
             throw APIError.missingIdentification
         }
         
-        let fixedUpWalletAddress = sanitise(walletAddress: walletAddress)
-        
-        let record = try makeIdentifyRecord(walletAddress: fixedUpWalletAddress, customerUserId: customerUserId)
+        let record = try makeIdentifyRecord(walletAddress: walletAddress, customerUserId: customerUserId)
         try await record.write(to: db)
     }
     
@@ -57,13 +54,6 @@ public actor Spindl {
     
     // MARK: Private
     
-    private func sanitise(walletAddress: String?) -> String? {
-        if let addy = walletAddress {
-            return addy.replacing(whitespaceRegex, with: "_")
-        }
-        
-        return nil
-    }
     
     private func makeIdentifyRecord(walletAddress: String?, customerUserId: String?) throws -> EventRecord {
         let identity = EventIdentity(address: walletAddress, customerUserId: customerUserId)
