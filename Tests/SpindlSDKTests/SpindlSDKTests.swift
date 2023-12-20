@@ -46,9 +46,10 @@ final class SpindlSDKTests: XCTestCase {
             },
             "metadata": {
                 "ts": 1700430547,
-                "persistentId": "ego"
+                "persistentId": "ego",
+                "appID": "xyz.spindl.example"
             },
-            "sdkType": "android_sdk_full",
+            "sdkType": "ios_sdk_full",
             "type": "CUSTOM"
         }
 """
@@ -106,6 +107,7 @@ final class SpindlSDKTests: XCTestCase {
         
         do {
             try await Spindl.shared.track(name: "myButtonTapped", properties: ["view":"MyLoginView","otherProperty":"Another one"])
+            expectation1.fulfill()
         } catch {
             XCTFail(error.localizedDescription)
         }
