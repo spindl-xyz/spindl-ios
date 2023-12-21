@@ -19,4 +19,16 @@ struct EventIdentity : Codable {
         self.address = address
         self.customerUserId = customerUserId
     }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        if let addy = address, !addy.isEmpty {
+            try container.encode(addy, forKey: .address)
+        }
+        
+        if let userID = customerUserId, !userID.isEmpty {
+            try container.encode(userID, forKey: .customerUserId)
+        }
+    }
 }
